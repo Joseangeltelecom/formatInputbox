@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test App</title>
+</head>
+<body>
+
+    <div>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+       <br>
+       <input class="currency-input" type="text" value="0.00" maxlength="17"/>
+    </div> 
+
+    <script type="text/javascript">
+            var inputs = document.querySelectorAll('.currency-input');
+   
+            inputs.forEach(function(input) {
+                input.addEventListener('keydown', function() {
+                    handleKeyDown(this);
+                });
+   
+                input.addEventListener('input', function() {
+                    handleInput(this);
+                });
+            });
+   
+        function handleKeyDown(inputElement) {
+            if (inputElement.value === '0.00') {
+                inputElement.value = '';
+            }
+            inputElement.preValue = inputElement.value;
+            inputElement.style.backgroundColor = 'yellow';
+        }
+   
+        function handleInput(inputElement) {
+    var cursorPos = inputElement.selectionStart;
+    var dotPos = inputElement.value.indexOf('.');
+    var n = parseFloat(inputElement.value.replace(/,/g,''));
+    if (isNaN(n)) {
+        n = 0;
+    }
+
+    var parts = inputElement.value.split('.');
+    if (parts[0].length > 11) {
+        inputElement.value = inputElement.preValue;
+        return;
+    }
+
+    inputElement.preValue = inputElement.value = n.toLocaleString('en-US', { style: 'decimal', maximumFractionDigits: 2, minimumFractionDigits: 2 });
+
+    if (dotPos > -1 && cursorPos !== inputElement.value.length) {
+        cursorPos = inputElement.value.indexOf('.') - (dotPos - cursorPos);
+    }
+
+    inputElement.setSelectionRange(cursorPos, cursorPos);
+}
+    </script>
+</body>
+</html>
