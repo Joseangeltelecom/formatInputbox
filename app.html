@@ -29,8 +29,8 @@
             var inputs = document.querySelectorAll('.currency-input');
    
             inputs.forEach(function(input) {
-                input.addEventListener('keydown', function() {
-                    handleKeyDown(this);
+                input.addEventListener('keydown', function(event) {
+                    handleKeyDown(this, event);
                 });
    
                 input.addEventListener('input', function() {
@@ -38,7 +38,15 @@
                 });
             });
    
-        function handleKeyDown(inputElement) {
+        function handleKeyDown(inputElement, event) {
+            if (event.key === 'Backspace') {
+                // If the cursor is just after the dot, move it to the left part of the dot
+                if (inputElement.selectionStart === inputElement.selectionEnd && inputElement.value[inputElement.selectionStart - 1] === '.') {
+                    inputElement.setSelectionRange(inputElement.selectionStart - 1, inputElement.selectionStart - 1);
+                    event.preventDefault(); // Prevents default backspace behavior
+                }
+            }
+   
             if (inputElement.value === '0.00') {
                 inputElement.value = '';
             }
@@ -47,27 +55,27 @@
         }
    
         function handleInput(inputElement) {
-    var cursorPos = inputElement.selectionStart;
-    var dotPos = inputElement.value.indexOf('.');
-    var n = parseFloat(inputElement.value.replace(/,/g,''));
-    if (isNaN(n)) {
-        n = 0;
-    }
+            var cursorPos = inputElement.selectionStart;
+            var dotPos = inputElement.value.indexOf('.');
+            var n = parseFloat(inputElement.value.replace(/,/g,''));
+            if (isNaN(n)) {
+                n = 0;
+            }
 
-    var parts = inputElement.value.split('.');
-    if (parts[0].length > 11) {
-        inputElement.value = inputElement.preValue;
-        return;
-    }
+            var parts = inputElement.value.split('.');
+            if (parts[0].length > 11) {
+                inputElement.value = inputElement.preValue;
+                return;
+            }
 
-    inputElement.preValue = inputElement.value = n.toLocaleString('en-US', { style: 'decimal', maximumFractionDigits: 2, minimumFractionDigits: 2 });
+            inputElement.preValue = inputElement.value = n.toLocaleString('en-US', { style: 'decimal', maximumFractionDigits: 2, minimumFractionDigits: 2 });
 
-    if (dotPos > -1 && cursorPos !== inputElement.value.length) {
-        cursorPos = inputElement.value.indexOf('.') - (dotPos - cursorPos);
-    }
+            if (dotPos > -1 && cursorPos !== inputElement.value.length) {
+                cursorPos = inputElement.value.indexOf('.') - (dotPos - cursorPos);
+            }
 
-    inputElement.setSelectionRange(cursorPos, cursorPos);
-}
+            inputElement.setSelectionRange(cursorPos, cursorPos);
+        }
     </script>
 </body>
 </html>
